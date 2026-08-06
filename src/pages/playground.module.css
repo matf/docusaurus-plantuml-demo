@@ -1,0 +1,88 @@
+.lede {
+  max-width: 60rem;
+  color: var(--ifm-color-emphasis-800);
+}
+
+.paneHeading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.paneTitle {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.status {
+  color: var(--ifm-color-emphasis-600);
+  font-size: 0.8125rem;
+}
+
+.editor {
+  display: block;
+  width: 100%;
+  min-height: 24rem;
+  padding: 0.75rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: var(--ifm-global-radius);
+  background: var(--ifm-background-surface-color);
+  color: var(--ifm-font-color-base);
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  resize: vertical;
+  tab-size: 2;
+}
+
+.editor:focus-visible {
+  outline: 2px solid var(--ifm-color-primary);
+  outline-offset: 1px;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.controlsLabel {
+  color: var(--ifm-color-emphasis-700);
+  font-size: 0.875rem;
+}
+
+.hint {
+  margin-top: 0.75rem;
+  color: var(--ifm-color-emphasis-700);
+  font-size: 0.875rem;
+}
+
+.kbd {
+  padding: 0.1rem 0.3rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 0.25rem;
+  background: var(--ifm-color-emphasis-100);
+  font-size: 0.8125rem;
+}
+
+.preview {
+  /* Matches the editor's height so the two panes line up before a diagram has rendered. */
+  min-height: 24rem;
+  padding: 1rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: var(--ifm-global-radius);
+  background: var(--ifm-background-surface-color);
+  overflow-x: auto;
+}
+
+@media (min-width: 997px) {
+  /* The preview follows along while a long diagram source is scrolled. */
+  .preview {
+    position: sticky;
+    top: calc(var(--ifm-navbar-height) + 1rem);
+  }
+}

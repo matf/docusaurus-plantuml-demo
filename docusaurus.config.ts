@@ -66,6 +66,7 @@ const config: Config = {
       title: 'PlantUML for Docusaurus',
       items: [
         {type: 'docSidebar', sidebarId: 'demo', position: 'left', label: 'Demos'},
+        {to: '/playground', label: 'Playground', position: 'left'},
         {
           href: 'https://www.npmjs.com/package/@matfsw/docusaurus-plantuml-plugin',
           label: 'npm',

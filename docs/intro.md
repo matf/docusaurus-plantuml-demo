@@ -86,3 +86,6 @@ ones that need Graphviz layout.
 
 **Plugin behaviour** demonstrates the things that are easy to get wrong: dark mode, several
 diagrams on one page, invalid source, and leaving ordinary code blocks alone.
+
+The [playground](/playground) lets you type your own PlantUML and watch it render as you go —
+same renderer, same browser, still no network call.

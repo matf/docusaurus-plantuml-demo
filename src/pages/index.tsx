@@ -84,6 +84,9 @@ export default function Home(): ReactNode {
             <Link className="button button--secondary button--lg" to="/docs/intro">
               See the demos
             </Link>
+            <Link className="button button--secondary button--lg" to="/playground">
+              Try it live
+            </Link>
             <Link
               className="button button--outline button--secondary button--lg"
               href="https://www.npmjs.com/package/@matfsw/docusaurus-plantuml-plugin"
