@@ -69,6 +69,18 @@ bus --> dlq
 @enduml
 ```
 
+## Maximizing
+
+The **⛶** button expands the diagram to fill the browser window over a solid background, fitted
+to the space available. <kbd>Escape</kbd> or the same button restores it, along with whatever
+zoom level you had before.
+
+This is an in-page overlay rather than the browser's Fullscreen API. `requestFullscreen()`
+takes the entire browser window fullscreen in Firefox instead of presenting the diagram, and
+its backdrop sits outside the element so the page shows through behind a diagram with a
+transparent background. An overlay has neither problem and works the same everywhere —
+including iOS Safari, which has no element fullscreen at all.
+
 ## How it behaves
 
 | Input                                       | What happens                        |
