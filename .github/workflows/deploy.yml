@@ -1,0 +1,66 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never let two deployments race; queue instead of cancelling a half-finished publish.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build the site
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/configure-pages@v5
+      - run: npm ci
+      - run: npm run build
+      - name: Fail if the PlantUML runtime was not emitted
+        # The whole point of the site is that the engine is served from this origin. If the
+        # copy step ever silently stops running, every diagram would break at runtime, so
+        # catch it here rather than in a visitor's browser.
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          dirs=(build/assets/plantuml-client-*)
+          if [ ${#dirs[@]} -eq 0 ]; then
+            echo "No build/assets/plantuml-client-* directory was produced." >&2
+            exit 1
+          fi
+          for f in viz-global.js plantuml.js; do
+            if [ ! -s "${dirs[0]}/$f" ]; then
+              echo "Missing or empty: ${dirs[0]}/$f" >&2
+              exit 1
+            fi
+          done
+          echo "Runtime assets present in ${dirs[0]}:"
+          ls -lh "${dirs[0]}"
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build
+
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
