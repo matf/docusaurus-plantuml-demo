@@ -22,6 +22,7 @@ const sidebars: SidebarsConfig = {
       label: 'Plugin behaviour',
       collapsed: false,
       items: [
+        'behaviour/zoom',
         'behaviour/dark-mode',
         'behaviour/many-diagrams',
         'behaviour/titles-and-aliases',
