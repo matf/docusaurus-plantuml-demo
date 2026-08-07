@@ -340,33 +340,42 @@ function Editor(): ReactNode {
   return (
     <div className="row">
       <div className="col col--6 margin-bottom--lg">
+        {/*
+         * The language switcher lives *inside* the heading row rather than below it, so the
+         * editor and the preview still start at the same y position. Sitting between the
+         * heading and the editor, it pushed the left pane down and left the two boxes visibly
+         * out of step.
+         */}
         <div className={styles.paneHeading}>
-          <h2 className={styles.paneTitle}>Source</h2>
+          <div className={styles.paneTitleGroup}>
+            <h2 className={styles.paneTitle}>Source</h2>
+            {/*
+             * `role="group"` with `aria-pressed` buttons rather than a radio group: these are
+             * two mutually exclusive actions on the editor, and readers expect Tab to move past
+             * them rather than the arrow keys to cycle them.
+             */}
+            <div className={styles.engineSwitch} role="group" aria-label="Diagram language">
+              {(Object.keys(ENGINE_LABEL) as Engine[]).map((candidate) => (
+                <button
+                  key={candidate}
+                  type="button"
+                  className={clsx(
+                    'button button--sm',
+                    candidate === engine
+                      ? 'button--primary'
+                      : 'button--outline button--secondary',
+                  )}
+                  aria-pressed={candidate === engine}
+                  onClick={() => switchEngine(candidate)}
+                >
+                  {ENGINE_LABEL[candidate]}
+                </button>
+              ))}
+            </div>
+          </div>
           <span className={styles.status} role="status">
             {pending ? 'Editing…' : `${lineCount} lines`}
           </span>
-        </div>
-
-        {/*
-         * `role="group"` with `aria-pressed` buttons rather than a radio group: these are two
-         * mutually exclusive actions on the editor, and readers expect Tab to move past them
-         * rather than the arrow keys to cycle them.
-         */}
-        <div className={styles.engineSwitch} role="group" aria-label="Diagram language">
-          {(Object.keys(ENGINE_LABEL) as Engine[]).map((candidate) => (
-            <button
-              key={candidate}
-              type="button"
-              className={clsx(
-                'button button--sm',
-                candidate === engine ? 'button--primary' : 'button--outline button--secondary',
-              )}
-              aria-pressed={candidate === engine}
-              onClick={() => switchEngine(candidate)}
-            >
-              {ENGINE_LABEL[candidate]}
-            </button>
-          ))}
         </div>
 
         <textarea
@@ -448,7 +457,7 @@ export default function Playground(): ReactNode {
         <h1>Playground</h1>
         <p className={styles.lede}>
           Type <strong>PlantUML</strong> or <strong>Graphviz DOT</strong> on the left and watch
-          it render on the right — switch language with the buttons above the editor.
+          it render on the right — switch language with the buttons beside “Source”.
           Everything happens in this tab: the diagram source is never uploaded, and the same{' '}
           <code>@theme/PlantUmlDiagram</code> component that renders every fenced block in{' '}
           <Link to="/docs/intro">the demos</Link> is doing the work here. Graphviz costs no
