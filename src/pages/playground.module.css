@@ -86,3 +86,10 @@
     top: calc(var(--ifm-navbar-height) + 1rem);
   }
 }
+
+/* The language switcher sits between the pane heading and the editor. */
+.engineSwitch {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
