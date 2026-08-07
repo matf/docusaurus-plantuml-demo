@@ -1,9 +1,23 @@
+import {createRequire} from 'node:module';
+
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 import type {PlantUmlPluginOptions} from '@matfsw/docusaurus-plantuml-plugin';
 
 const organizationName = 'matf';
 const projectName = 'docusaurus-plantuml-demo';
+
+/**
+ * The plugin version this site was built against, read from the package actually installed
+ * rather than written down by hand — a number nobody remembers to update is worse than no
+ * number at all. The plugin lists `./package.json` in its `exports`, so this is a supported
+ * entry point rather than a reach into its internals.
+ */
+const pluginVersion: string = (
+  createRequire(import.meta.url)(
+    '@matfsw/docusaurus-plantuml-plugin/package.json',
+  ) as {version: string}
+).version;
 
 /**
  * Deployed to GitHub Pages under a project path, so `baseUrl` is not `/`. Every runtime
@@ -100,8 +114,8 @@ const config: Config = {
               href: 'https://github.com/matf/docusaurus-plantuml-plugin',
             },
             {
-              label: 'npm package',
-              href: 'https://www.npmjs.com/package/@matfsw/docusaurus-plantuml-plugin',
+              label: `Plugin v${pluginVersion}`,
+              href: `https://www.npmjs.com/package/@matfsw/docusaurus-plantuml-plugin/v/${pluginVersion}`,
             },
             {label: 'This demo site', href: `https://github.com/${organizationName}/${projectName}`},
           ],
@@ -116,7 +130,9 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Every diagram on this site was rendered in your browser. MIT licensed.`,
+      copyright:
+        `Every diagram on this site was rendered in your browser by ` +
+        `@matfsw/docusaurus-plantuml-plugin v${pluginVersion}. MIT licensed.`,
     },
     prism: {additionalLanguages: ['bash', 'json']},
   } satisfies Preset.ThemeConfig,
