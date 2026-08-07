@@ -8,7 +8,7 @@ import PlantUmlDiagram from '@theme/PlantUmlDiagram';
 
 import styles from './index.module.css';
 
-/** The same source shown in the code panel beside it, so the two cannot drift apart. */
+/** The same sources shown in the code panels beside them, so the two cannot drift apart. */
 const DIAGRAM = `@startuml
 actor User
 participant Browser
@@ -20,6 +20,16 @@ API --> Browser: Access token
 Browser --> User: Signed in
 @enduml`;
 
+const DOT = `digraph {
+  rankdir=LR;
+  node [shape=box, style=rounded];
+
+  src -> build;
+  build -> test;
+  test -> deploy;
+  test -> src [label="fix", style=dashed];
+}`;
+
 const INSTALL = 'npm install @matfsw/docusaurus-plantuml-plugin';
 
 const CONFIG = `// docusaurus.config.ts
@@ -28,6 +38,7 @@ plugins: [
 ],`;
 
 const FENCE = ['```plantuml title="Authentication sequence"', DIAGRAM, '```'].join('\n');
+const DOT_FENCE = ['```dot title="Build pipeline"', DOT, '```'].join('\n');
 
 const FEATURES: {title: string; body: ReactNode}[] = [
   {
@@ -52,8 +63,17 @@ const FEATURES: {title: string; body: ReactNode}[] = [
     title: 'Just a fenced code block',
     body: (
       <>
-        Write <code>```plantuml</code> in any <code>.md</code> or <code>.mdx</code> file. No
-        swizzling, no imports, no per-page components.
+        Write <code>```plantuml</code> — or <code>```dot</code> — in any <code>.md</code> or{' '}
+        <code>.mdx</code> file. No swizzling, no imports, no per-page components.
+      </>
+    ),
+  },
+  {
+    title: 'Graphviz too, for free',
+    body: (
+      <>
+        PlantUML already uses Graphviz for its own layout, so <code>dot</code> fences reuse an
+        engine your site was downloading anyway — Graphviz support costs zero extra bytes.
       </>
     ),
   },
@@ -61,8 +81,9 @@ const FEATURES: {title: string; body: ReactNode}[] = [
     title: 'Loaded only where needed',
     body: (
       <>
-        The ~8 MB runtime is fetched lazily, only on pages that actually contain a diagram, and
-        only once per session. Pages without diagrams never touch it.
+        The runtime is fetched lazily, only on pages that actually contain a diagram, and only
+        once per session. A page with only <code>dot</code> diagrams never fetches the much
+        larger PlantUML engine at all.
       </>
     ),
   },
@@ -73,7 +94,7 @@ export default function Home(): ReactNode {
 
   return (
     <Layout
-      title="PlantUML diagrams in Docusaurus, rendered in the browser"
+      title="PlantUML and Graphviz diagrams in Docusaurus, rendered in the browser"
       description={siteConfig.tagline}
     >
       <header className={clsx('hero hero--primary', styles.hero)}>
@@ -99,33 +120,51 @@ export default function Home(): ReactNode {
 
       <main>
         <section className="container margin-vert--xl">
+          <h2 className={styles.sectionTitle}>Two engines, one fenced code block</h2>
+          <p className={styles.sectionLead}>
+            Write the fence on the left, get the diagram on the right. Both were rendered by
+            your browser just now — no server, no CDN, nothing sent anywhere.
+          </p>
+
           <div className="row">
             <div className="col col--6">
-              <h2>Write this</h2>
-              <CodeBlock language="markdown">{FENCE}</CodeBlock>
-            </div>
-            <div className="col col--6">
-              <h2>Get this</h2>
-              <p>
-                The diagram below is rendered by your browser, right now, from exactly the
-                source on the left.
-              </p>
-              <div className={styles.demoFrame}>
-                <PlantUmlDiagram source={DIAGRAM} title="Authentication sequence" />
+              <div className={styles.engineCard}>
+                <h3 className={styles.engineTitle}>
+                  PlantUML <code>```plantuml</code>
+                </h3>
+                <CodeBlock language="markdown">{FENCE}</CodeBlock>
+                <div className={styles.demoFrame}>
+                  <PlantUmlDiagram source={DIAGRAM} title="Authentication sequence" />
+                </div>
               </div>
-              <p className={styles.demoHint}>
-                This page is a React component, not Markdown, so it uses the packaged{' '}
-                <code>@theme/PlantUmlDiagram</code> component directly. In{' '}
-                <code>.md</code> and <code>.mdx</code> you only ever write the fence.
-              </p>
+            </div>
+
+            <div className="col col--6">
+              <div className={styles.engineCard}>
+                <h3 className={styles.engineTitle}>
+                  Graphviz <code>```dot</code>
+                </h3>
+                <CodeBlock language="markdown">{DOT_FENCE}</CodeBlock>
+                <div className={styles.demoFrame}>
+                  <PlantUmlDiagram source={DOT} engine="graphviz" title="Build pipeline" />
+                </div>
+              </div>
             </div>
           </div>
+
+          <p className={styles.demoHint}>
+            This page is a React component, not Markdown, so it uses the packaged{' '}
+            <code>@theme/PlantUmlDiagram</code> component directly. In <code>.md</code> and{' '}
+            <code>.mdx</code> you only ever write the fence. See the{' '}
+            <Link to="/docs/gallery/graphviz">Graphviz gallery</Link> for layout engines,
+            clusters and dark-mode behaviour.
+          </p>
         </section>
 
         <section className="container margin-bottom--xl">
           <div className="row">
             {FEATURES.map((feature) => (
-              <div key={feature.title} className="col col--3 margin-bottom--lg">
+              <div key={feature.title} className="col col--4 margin-bottom--lg">
                 <h3>{feature.title}</h3>
                 <p>{feature.body}</p>
               </div>

@@ -15,6 +15,7 @@ const sidebars: SidebarsConfig = {
         'gallery/component',
         'gallery/entity-relationship',
         'gallery/mindmap',
+        'gallery/graphviz',
       ],
     },
     {

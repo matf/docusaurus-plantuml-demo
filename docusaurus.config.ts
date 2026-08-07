@@ -6,13 +6,14 @@ const organizationName = 'matf';
 const projectName = 'docusaurus-plantuml-demo';
 
 /**
- * Deployed to GitHub Pages under a project path, so `baseUrl` is not `/`. Every PlantUML
- * runtime asset URL the plugin emits is prefixed with it — which is precisely the case that
+ * Deployed to GitHub Pages under a project path, so `baseUrl` is not `/`. Every runtime
+ * asset URL the plugin emits is prefixed with it — which is precisely the case that
  * tends to break with hand-rolled diagram integrations.
  */
 const config: Config = {
   title: 'Docusaurus PlantUML plugin',
-  tagline: 'PlantUML diagrams rendered in your browser — no Java, no server, no CDN',
+  tagline:
+    'PlantUML and Graphviz diagrams rendered in your browser — no Java, no server, no CDN',
   favicon: 'img/favicon.svg',
 
   url: `https://${organizationName}.github.io`,
@@ -37,6 +38,15 @@ const config: Config = {
         sanitizeSvg: true,
         showSourceOnError: true,
         renderTimeoutMs: 20_000,
+        // Spelled out rather than left to the defaults, because this site documents them.
+        // `dot`, `graphviz` and `gv` fences are rendered by the Graphviz engine that
+        // `@plantuml/core` already bundles for PlantUML's own layout — no extra download.
+        graphviz: {
+          enabled: true,
+          languages: ['dot', 'graphviz', 'gv'],
+          engine: 'dot',
+          allowEngineOverride: true,
+        },
       } satisfies PlantUmlPluginOptions,
     ],
   ],
@@ -101,6 +111,7 @@ const config: Config = {
           items: [
             {label: 'PlantUML', href: 'https://plantuml.com/'},
             {label: '@plantuml/core', href: 'https://www.npmjs.com/package/@plantuml/core'},
+            {label: 'Graphviz', href: 'https://graphviz.org/'},
             {label: 'Docusaurus', href: 'https://docusaurus.io/'},
           ],
         },
