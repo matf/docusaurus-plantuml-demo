@@ -101,6 +101,24 @@
     position: sticky;
     top: calc(var(--ifm-navbar-height) + 1rem);
   }
+
+  /*
+   * …but not while a diagram is maximized.
+   *
+   * `position: sticky` creates a stacking context unconditionally — unlike `relative` and
+   * `absolute`, which only do so with a `z-index`. That trapped the maximized diagram's
+   * full-screen overlay inside the preview: its `z-index: 400` then competed only with the
+   * preview's own children, while the preview itself sat at `z-index: auto` in the root
+   * context, below the navbar's 200. The result was a full-screen diagram with its top edge
+   * tucked under the navbar, and only here — no other page puts a diagram in a sticky ancestor.
+   *
+   * While maximized the page is scroll-locked and completely covered, so stickiness has nothing
+   * left to do. Dropping it returns the overlay to the root stacking context, where its 400
+   * beats the navbar as it was always meant to.
+   */
+  .preview:has([data-plantuml-maximized]) {
+    position: static;
+  }
 }
 
 .engineSwitch {
