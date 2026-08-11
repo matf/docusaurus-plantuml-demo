@@ -20,6 +20,12 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
+      label: 'Standard library',
+      collapsed: false,
+      items: ['stdlib/c4', 'stdlib/notations', 'stdlib/sprites'],
+    },
+    {
+      type: 'category',
       label: 'Plugin behaviour',
       collapsed: false,
       items: [
