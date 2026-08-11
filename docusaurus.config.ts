@@ -37,7 +37,10 @@ const config: Config = {
   trailingSlash: false,
 
   onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'throw',
+
+  // `onBrokenMarkdownLinks` moved under `markdown.hooks` in Docusaurus 3.9. The top-level
+  // option still works, but warns on every build and is removed in v4.
+  markdown: {hooks: {onBrokenMarkdownLinks: 'throw'}},
 
   i18n: {defaultLocale: 'en', locales: ['en']},
 
