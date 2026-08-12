@@ -38,9 +38,15 @@ const config: Config = {
 
   onBrokenLinks: 'throw',
 
-  // `onBrokenMarkdownLinks` moved under `markdown.hooks` in Docusaurus 3.9. The top-level
-  // option still works, but warns on every build and is removed in v4.
-  markdown: {hooks: {onBrokenMarkdownLinks: 'throw'}},
+  markdown: {
+    // `detect` picks the parser from the file extension: `.mdx` files are MDX, `.md` files
+    // are (near-)CommonMark. Every page here is `.mdx` except `behaviour/commonmark.md`,
+    // which exists to prove the plugin renders diagrams under the CommonMark parser too.
+    format: 'detect',
+    // `onBrokenMarkdownLinks` moved under `markdown.hooks` in Docusaurus 3.9. The top-level
+    // option still works, but warns on every build and is removed in v4.
+    hooks: {onBrokenMarkdownLinks: 'throw'},
+  },
 
   i18n: {defaultLocale: 'en', locales: ['en']},
 

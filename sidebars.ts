@@ -35,6 +35,7 @@ const sidebars: SidebarsConfig = {
         'behaviour/titles-and-aliases',
         'behaviour/errors',
         'behaviour/ordinary-code',
+        'behaviour/commonmark',
       ],
     },
   ],
