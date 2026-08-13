@@ -26,6 +26,12 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
+      label: 'Deep links',
+      collapsed: false,
+      items: ['deeplinks/overview', 'deeplinks/runbook'],
+    },
+    {
+      type: 'category',
       label: 'Plugin behaviour',
       collapsed: false,
       items: [

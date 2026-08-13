@@ -38,6 +38,13 @@ const config: Config = {
 
   onBrokenLinks: 'throw',
 
+  // Diagram deep links are `#graph?highlight-node=…` hashes, resolved at runtime by the
+  // plugin against the rendered SVG. Docusaurus checks every in-page anchor against the
+  // heading ids it knows about, and there is no heading called `graph?highlight-node=…`,
+  // so it reports each one as broken. The check is all-or-nothing, so a site that uses
+  // deep links has to turn it off.
+  onBrokenAnchors: 'ignore',
+
   markdown: {
     // `detect` picks the parser from the file extension: `.mdx` files are MDX, `.md` files
     // are (near-)CommonMark. Every page here is `.mdx` except `behaviour/commonmark.md`,

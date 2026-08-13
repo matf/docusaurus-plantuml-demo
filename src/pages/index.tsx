@@ -30,6 +30,44 @@ const DOT = `digraph {
   test -> src [label="fix", style=dashed];
 }`;
 
+/**
+ * Big enough that the viewer controls have something to do, and carrying an `id` so the deep
+ * links beside it have a deterministic node to aim at.
+ */
+const VIEWER_DOT = `digraph {
+  rankdir=LR;
+  node [shape=box, style=rounded, fontsize=10];
+
+  subgraph cluster_edge {
+    label="Edge"; style=dashed; color="#4a6fa5";
+    cdn [label="CDN"]; waf [label="WAF"]; lb [label="Load balancer"];
+  }
+
+  subgraph cluster_app {
+    label="Application"; style=dashed; color="#4a8f5f";
+    gateway [label="API gateway"];
+    auth [label="Auth"]; orders [label="Orders"]; billing [label="Billing"];
+    catalogue [label="Catalogue"]; search [label="Search"];
+    recommend [label="Recommendations"]; notify [label="Notifications"];
+  }
+
+  subgraph cluster_data {
+    label="Data"; style=dashed; color="#8a5aa5";
+    ordersdb [id="ORDERS-DB", label="Orders DB", shape=cylinder];
+    billingdb [label="Billing DB", shape=cylinder];
+    index [label="Search index", shape=cylinder];
+    warehouse [label="Warehouse", shape=cylinder];
+    bus [label="Event bus", shape=cylinder];
+  }
+
+  cdn -> waf -> lb -> gateway;
+  gateway -> auth; gateway -> orders; gateway -> billing;
+  gateway -> catalogue; gateway -> search; gateway -> recommend;
+  orders -> ordersdb; billing -> billingdb; catalogue -> index; search -> index;
+  orders -> bus; billing -> bus; bus -> notify; bus -> warehouse;
+  recommend -> warehouse;
+}`;
+
 const INSTALL = 'npm install @matfsw/docusaurus-plantuml-plugin';
 
 const CONFIG = `// docusaurus.config.ts
@@ -84,6 +122,45 @@ const FEATURES: {title: string; body: ReactNode}[] = [
         The runtime is fetched lazily, only on pages that actually contain a diagram, and only
         once per session. A page with only <code>dot</code> diagrams never fetches the much
         larger PlantUML engine at all.
+      </>
+    ),
+  },
+];
+
+const VIEWER_FEATURES: {title: string; body: ReactNode}[] = [
+  {
+    title: 'Maximize and Fit',
+    body: (
+      <>
+        Maximizing opens the diagram fitted to the screen, however large it is. Fit brings that
+        view back once you have zoomed or panned away from it.
+      </>
+    ),
+  },
+  {
+    title: 'Minimap',
+    body: (
+      <>
+        A small copy of the diagram with a rectangle marking what you are looking at. Press or
+        drag anywhere on it to jump there.
+      </>
+    ),
+  },
+  {
+    title: 'Search',
+    body: (
+      <>
+        Find text inside the rendered diagram. Every match is highlighted, and stepping through
+        them centres the view on each one in turn.
+      </>
+    ),
+  },
+  {
+    title: 'Deep links',
+    body: (
+      <>
+        A <code>#graph?highlight-node=…</code> URL names one node. Paste it into a ticket and
+        the reader lands on that node, highlighted and centred.
       </>
     ),
   },
@@ -158,6 +235,38 @@ export default function Home(): ReactNode {
             <code>.mdx</code> you only ever write the fence. See the{' '}
             <Link to="/docs/gallery/graphviz">Graphviz gallery</Link> for layout engines,
             clusters and dark-mode behaviour.
+          </p>
+        </section>
+
+        <section className="container margin-bottom--xl">
+          <h2 className={styles.sectionTitle}>A viewer, not just a picture</h2>
+          <p className={styles.sectionLead}>
+            A diagram worth drawing is usually too big for a column of text. Every diagram comes
+            with a viewer — zoom and pan, a maximized view fitted to the screen, a minimap, text
+            search, and links that point at a single node. Try them on the graph below.
+          </p>
+
+          <div className={styles.demoFrame}>
+            <PlantUmlDiagram source={VIEWER_DOT} engine="graphviz" title="Order platform" />
+          </div>
+
+          <div className="row margin-top--lg">
+            {VIEWER_FEATURES.map((feature) => (
+              <div key={feature.title} className="col col--3 margin-bottom--lg">
+                <h3>{feature.title}</h3>
+                <p>{feature.body}</p>
+              </div>
+            ))}
+          </div>
+
+          <p className={styles.demoHint}>
+            Deep links work right here, on this page:{' '}
+            <Link to="#graph?highlight-node=ORDERS-DB">highlight the Orders DB</Link> (by an
+            explicit <code>id</code>) or <Link to="#graph?highlight-node=search">the search
+            service</Link> (by its plain DOT node name). Both scroll the diagram into view,
+            mark the node and centre on it. See{' '}
+            <Link to="/docs/deeplinks/overview">Deep links</Link> for the PlantUML spelling and
+            for links that cross pages.
           </p>
         </section>
 
