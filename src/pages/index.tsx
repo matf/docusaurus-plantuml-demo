@@ -160,7 +160,8 @@ const VIEWER_FEATURES: {title: string; body: ReactNode}[] = [
     body: (
       <>
         A <code>#graph?highlight-node=…</code> URL names one node. Paste it into a ticket and
-        the reader lands on that node, highlighted and centred.
+        the reader lands on that node, highlighted and centred — and a node can carry such a
+        link itself, so one diagram opens another.
       </>
     ),
   },

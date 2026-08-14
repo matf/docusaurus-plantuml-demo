@@ -1,12 +1,14 @@
 ---
-sidebar_position: 1
+sidebar_position: 2
 title: Runbook (linked to)
 ---
 
 # Runbook
 
 This page exists to be linked _into_. Every diagram on it is addressable from
-[the deep links page](./overview.mdx), and it links back the same way.
+[the deep links page](./overview.mdx) and from the nodes on
+[Links on nodes](./from-nodes.mdx) — and it links back both ways, from prose and from inside
+its own diagrams.
 
 If you arrived here from a `#graph?highlight-node=…` link, one node below is already
 highlighted and centred, and the page has scrolled to it.
@@ -14,13 +16,14 @@ highlighted and centred, and the page has scrolled to it.
 ## Recovering a stuck order
 
 The PlantUML aliases here are the handles: `RETRY_LOOP_9` and `ESCALATE_3` never appear in
-the picture.
+the picture. **Order service** is blue because it carries a `[[…]]` link of its own, back to
+the overview page's Graphviz diagram.
 
 ```plantuml title="Recovery path"
 @startuml
 skinparam componentStyle rectangle
 
-component "Order service" as ORDER_SERVICE_42
+component "Order service" as ORDER_SERVICE_42 [[/docs/deeplinks/overview#graph?highlight-node=ORDER-DB-1]]
 component "Retry loop" as RETRY_LOOP_9
 component "Escalation" as ESCALATE_3
 database "Dead letter" as DEADLETTER
@@ -37,6 +40,9 @@ DEADLETTER --> ESCALATE_3 : page the on-call
 - [Order service](#graph?highlight-node=ORDER_SERVICE_42) — the same alias as the diagram on
   the other page, which is the point: **the same link works on both pages**, and each page
   highlights its own copy
+
+That node being both a link and a link target is the whole idea in one box: press it to go
+somewhere, or address it to arrive here.
 
 ## Every diagram reacts, independently
 
@@ -129,28 +135,31 @@ digraph {
   rankdir=LR;
   node [shape=box, style=rounded, fontsize=11];
 
+  // Leftmost on purpose: the figure's toolbar sits over the top-right corner, and a link
+  // nobody can press is a poor demonstration of a link.
+  back [
+    label="← Orders DB\n(overview page)",
+    URL="/docs/deeplinks/overview#graph?highlight-node=ORDER-DB-1",
+    fontcolor="#4a6fa5",
+    color="#4a6fa5"
+  ];
   dlq [label="Dead letter", shape=cylinder];
   drain [id="DLQ-DRAIN-2", label="Drain job"];
   replay [label="Replay"];
   discard [label="Discard"];
-  back [
-    label="← Orders DB\n(overview page)",
-    URL="/docusaurus-plantuml-demo/docs/deeplinks/overview#graph?highlight-node=ORDER-DB-1",
-    fontcolor="#4a6fa5",
-    color="#4a6fa5"
-  ];
 
+  back -> dlq [style=dotted, label="procedure"];
   dlq -> drain;
   drain -> replay;
   drain -> discard;
-  replay -> back;
 }
 ```
 
 The **← Orders DB** node carries a `URL` pointing into the other page's Graphviz diagram —
 press it and you land back on
 [the deep links page](./overview.mdx#graph?highlight-node=ORDER-DB-1) with its Orders DB
-highlighted.
+highlighted, without a page reload. Note the path is written `/docs/deeplinks/overview`: the
+site's `baseUrl` is added for you, the same as in a markdown link.
 
 :::note A node that links to a target is also found by it
 

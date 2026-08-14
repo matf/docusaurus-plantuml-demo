@@ -21,6 +21,9 @@ A URL hash of the form `#graph?highlight-node=…` fixes that. It names a node, 
 It works for both engines. PlantUML nodes are addressed by their alias, Graphviz nodes by an
 id, a link, or just their node name.
 
+This page is about linking **to** a node. Nodes can also link **out** — see
+[Links on nodes](./from-nodes.mdx).
+
 ## PlantUML: addressing by alias
 
 The aliases below never appear in the picture, but the engine writes each one into the
@@ -78,17 +81,10 @@ digraph {
     color="#4a6fa5"
   ];
   warehouse [label="Warehouse"];
-  runbook [
-    label="Retry loop →\n(other page)",
-    URL="/docusaurus-plantuml-demo/docs/deeplinks/runbook#graph?highlight-node=RETRY_LOOP_9",
-    fontcolor="#4a6fa5",
-    color="#4a6fa5"
-  ];
 
   gateway -> orders;
   gateway -> payments;
   orders -> warehouse;
-  payments -> runbook;
 }
 ```
 
@@ -115,22 +111,22 @@ These point at the [runbook](./runbook.mdx):
 - [Nightly compaction](<./runbook.mdx#graph?highlight-node=Nightly%20compaction>) — matched on
   its label text, with no annotation on the node
 
-The **Retry loop →** node in the Graphviz diagram above carries the first of those as its
-`URL`, so the diagram itself links into the other page's diagram.
+A link like these can also live **inside a diagram**, on a node — which is what
+[Links on nodes](./from-nodes.mdx) is about.
 
 ## How a node is addressed
 
 The identifier is resolved per diagram through a ladder, and the first level that matches
 wins — so an author-chosen id always beats loose text matching.
 
-| #   | Level             | Engine   | How you write it                                |
-| --- | ----------------- | -------- | ----------------------------------------------- |
-| 1   | Explicit SVG `id` | Graphviz | `node [id="ORDER-DB-1"]`                        |
-| 2   | Alias             | PlantUML | `component "Orders" as ORDER_SERVICE_42`        |
-| 3   | Self-anchor       | Graphviz | `node [URL="#graph?highlight-node=…"]`          |
-| 4   | Node name         | Graphviz | the DOT node name, via its `<title>`            |
-| 5   | Multiline label   | both     | `Archive%0A90210` — consecutive lines, one node |
-| 6   | Substring         | both     | any text line containing it, case-insensitively |
+| #   | Level             | Engine   | How you write it                                                    |
+| --- | ----------------- | -------- | ------------------------------------------------------------------- |
+| 1   | Explicit SVG `id` | Graphviz | `node [id="ORDER-DB-1"]`                                            |
+| 2   | Alias             | PlantUML | `component "Orders" as ORDER_SERVICE_42`                            |
+| 3   | Self-anchor       | both     | `node [URL="#graph?highlight-node=…"]`, or PlantUML `[[#graph?…]]`  |
+| 4   | Node name         | Graphviz | the DOT node name, via its `<title>`                                |
+| 5   | Multiline label   | both     | `Archive%0A90210` — consecutive lines, one node                     |
+| 6   | Substring         | both     | any text line containing it, case-insensitively                     |
 
 Levels 5 and 6 are the fallback for diagrams nobody annotated: they cost nothing to author,
 but they follow the label, so they break when someone rewords it. For a link you intend to
@@ -144,7 +140,9 @@ paste into a ticket, spend the id.
   collide with Docusaurus's own heading ids — but Docusaurus does not know that, so its
   broken-anchor check has to be told to leave these alone. This site sets
   `onBrokenAnchors: 'ignore'`.
-- **Links inside a Graphviz diagram are ordinary links.** One that points at another page
-  leaves the single-page app and loads that page fresh. Same-page ones (`#graph?…`) never do.
-- **PlantUML `[[url]]` links are not clickable** — the bundled engine draws the link text but
-  emits no anchor. That is why PlantUML deep-link ids ride on aliases rather than on links.
+- **Links inside a diagram navigate through the router**, in both engines — a node pointing at
+  another page arrives without a full page load. See
+  [Links on nodes](./from-nodes.mdx#how-the-clicks-behave).
+- **The identifier is not the link.** A node is addressable whether or not anything links to
+  it, and a node can link out without being addressable itself. The two directions are
+  independent; they just happen to meet in the middle when a diagram links to a diagram.

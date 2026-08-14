@@ -28,7 +28,7 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'Deep links',
       collapsed: false,
-      items: ['deeplinks/overview', 'deeplinks/runbook'],
+      items: ['deeplinks/overview', 'deeplinks/from-nodes', 'deeplinks/runbook'],
     },
     {
       type: 'category',
