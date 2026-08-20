@@ -11,6 +11,11 @@ updates:
       time: '04:00'
       timezone: Europe/Zurich
     open-pull-requests-limit: 1
+    # Bump the declared range, not just the lockfile. This site exists to demonstrate a specific
+    # plugin version, so `package.json` should name the version actually being demonstrated —
+    # under the default strategy a `^1.5.0` range silently absorbs every 1.5.x release and the
+    # manifest never moves.
+    versioning-strategy: increase
     groups:
       # No `update-types` filter, deliberately: majors join the group instead of spawning a second
       # pull request. `.github/workflows/dependabot-auto-merge.yml` then declines to merge that
