@@ -35,7 +35,29 @@ npm run serve
 
 Pushing to `main` runs [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml), which
 builds the site, asserts that the PlantUML runtime assets were actually emitted, and publishes
-to GitHub Pages. There are no secrets — Pages deployment uses the workflow's OIDC token.
+to GitHub Pages. Pages deployment itself uses the workflow's OIDC token, with no secret involved.
+
+`main` is protected: changes arrive as pull requests, and
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml) must pass first. It builds the site the
+same way the deploy does and runs the same runtime-asset assertion, so a dependency that breaks
+the build is caught before it reaches the live site rather than after.
+
+## Dependency updates
+
+Dependabot opens **one** pull request a week for npm and one for GitHub Actions. Minor and patch
+updates merge themselves as soon as `CI complete` is green, which redeploys the site. Majors ride
+in the same pull request and are held for review, with a comment naming what holds them; a major
+that cannot be taken at all belongs in an `ignore:` entry in
+[`.github/dependabot.yml`](.github/dependabot.yml), with a note saying what breaks.
+
+The merge is performed by a GitHub App rather than `GITHUB_TOKEN`. That is not cosmetic: GitHub
+does not trigger workflow runs from `GITHUB_TOKEN` events, so a `GITHUB_TOKEN` merge would land
+the update on `main` and never rebuild the site. The app needs `Contents` and `Pull requests`
+write, and its credentials live in the `RELEASE_APP_ID` and `RELEASE_APP_PRIVATE_KEY` Actions
+secrets — named for the plugin repository it is shared with, where it also cuts releases.
+
+This is how the demo picks up new plugin versions: `@matfsw/docusaurus-plantuml-plugin` is an
+ordinary dependency here, so a release reaches the site through the same weekly pull request.
 
 ## Related
 

@@ -1,0 +1,40 @@
+version: 2
+
+updates:
+  # One pull request for every npm update, never two. Merging a dependency bump here redeploys
+  # the live site, so the automation should never have to reason about two of them racing.
+  - package-ecosystem: npm
+    directory: '/'
+    schedule:
+      interval: weekly
+      day: monday
+      time: '04:00'
+      timezone: Europe/Zurich
+    open-pull-requests-limit: 1
+    groups:
+      # No `update-types` filter, deliberately: majors join the group instead of spawning a second
+      # pull request. `.github/workflows/dependabot-auto-merge.yml` then declines to merge that
+      # pull request and says which dependency is holding it, so a major is reviewed rather than
+      # merged — and still visible. A major that can never be taken belongs in an `ignore:` entry
+      # here, with a note saying what breaks.
+      all:
+        applies-to: version-updates
+        patterns: ['*']
+      all-security:
+        applies-to: security-updates
+        patterns: ['*']
+
+  # A different ecosystem, so Dependabot cannot fold it into the npm pull request above.
+  # Scheduling it a day later keeps the two from overlapping in practice; if they ever do, the
+  # `refresh` job in dependabot-auto-merge.yml brings the second up to date after the first lands.
+  - package-ecosystem: github-actions
+    directory: '/'
+    schedule:
+      interval: weekly
+      day: tuesday
+      time: '04:00'
+      timezone: Europe/Zurich
+    open-pull-requests-limit: 1
+    groups:
+      actions:
+        patterns: ['*']
