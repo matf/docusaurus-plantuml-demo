@@ -58,6 +58,9 @@ secrets — named for the plugin repository it is shared with, where it also cut
 
 This is how the demo picks up new plugin versions: `@matfsw/docusaurus-plantuml-plugin` is an
 ordinary dependency here, so a release reaches the site through the same weekly pull request.
+Dependabot runs with `versioning-strategy: increase`, so it raises the declared range rather than
+only the lockfile — `package.json` always names the plugin version the site is actually
+demonstrating, instead of a `^1.5.0` that silently absorbs every 1.5.x.
 
 ## Related
 
