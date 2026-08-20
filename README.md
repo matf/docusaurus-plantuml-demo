@@ -60,7 +60,9 @@ This is how the demo picks up new plugin versions: `@matfsw/docusaurus-plantuml-
 ordinary dependency here, so a release reaches the site through the same weekly pull request.
 Dependabot runs with `versioning-strategy: increase`, so it raises the declared range rather than
 only the lockfile — `package.json` always names the plugin version the site is actually
-demonstrating, instead of a `^1.5.0` that silently absorbs every 1.5.x.
+demonstrating, instead of a `^1.5.0` that silently absorbs every 1.5.x. It is also exempt from
+Dependabot's default three-day cooldown, which stays in force for every dependency this project
+does not publish itself.
 
 ## Related
 

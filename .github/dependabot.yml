@@ -16,6 +16,16 @@ updates:
     # under the default strategy a `^1.5.0` range silently absorbs every 1.5.x release and the
     # manifest never moves.
     versioning-strategy: increase
+    # Dependabot withholds a new version for three days by default. That is a real supply-chain
+    # guard when updates merge themselves — it closes the window in which a compromised release is
+    # taken minutes after publication — so it stays in place for everything we do not publish.
+    # It is pointless for our own package: this site exists to demonstrate the current plugin, the
+    # releases come from our own pipeline with npm provenance attested, and a three-day lag is
+    # precisely the staleness this configuration is meant to remove.
+    cooldown:
+      default-days: 3
+      exclude:
+        - '@matfsw/*'
     groups:
       # No `update-types` filter, deliberately: majors join the group instead of spawning a second
       # pull request. `.github/workflows/dependabot-auto-merge.yml` then declines to merge that
