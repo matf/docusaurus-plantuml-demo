@@ -42,6 +42,7 @@ const sidebars: SidebarsConfig = {
         'behaviour/errors',
         'behaviour/ordinary-code',
         'behaviour/commonmark',
+        'behaviour/mermaid',
       ],
     },
   ],

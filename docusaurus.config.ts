@@ -46,6 +46,10 @@ const config: Config = {
   onBrokenAnchors: 'ignore',
 
   markdown: {
+    // Turns ```mermaid fences into `<mermaid>` elements at the remark stage, which
+    // `@docusaurus/theme-mermaid` then renders. Enabling it is what makes Mermaid and this
+    // plugin coexist without either knowing about the other — see docs/behaviour/mermaid.
+    mermaid: true,
     // `detect` picks the parser from the file extension: `.mdx` files are MDX, `.md` files
     // are (near-)CommonMark. Every page here is `.mdx` except `behaviour/commonmark.md`,
     // which exists to prove the plugin renders diagrams under the CommonMark parser too.
@@ -56,6 +60,11 @@ const config: Config = {
   },
 
   i18n: {defaultLocale: 'en', locales: ['en']},
+
+  // Mermaid is a *theme*, not a plugin: it contributes `@theme/Mermaid` and nothing else.
+  // That is why it cannot collide with the PlantUML plugin, which contributes
+  // `@theme/MDXComponents/Code` and `@theme/PlantUmlDiagram`. Disjoint component sets.
+  themes: ['@docusaurus/theme-mermaid'],
 
   plugins: [
     [
