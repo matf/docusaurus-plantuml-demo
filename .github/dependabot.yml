@@ -23,6 +23,15 @@ updates:
       all-security:
         applies-to: security-updates
         patterns: ['*']
+    ignore:
+      # TypeScript 7 removes `baseUrl`, and `@docusaurus/tsconfig` — which this site extends —
+      # still sets it, so `tsc --noEmit` refuses to run at all: "Option 'baseUrl' has been
+      # removed." Deleting `baseUrl` from this repository's own tsconfig.json does not help; the
+      # option arrives from the package, which was verified by trying it. Left un-ignored it would
+      # sit in the grouped pull request forever, holding back the updates that *are* takeable.
+      # Revisit when Docusaurus ships a tsconfig without `baseUrl`.
+      - dependency-name: 'typescript'
+        update-types: ['version-update:semver-major']
 
   # A different ecosystem, so Dependabot cannot fold it into the npm pull request above.
   # Scheduling it a day later keeps the two from overlapping in practice; if they ever do, the
