@@ -30,25 +30,10 @@ jobs:
       - run: npm ci
       - run: npm run build
       - name: Fail if the PlantUML runtime was not emitted
-        # The whole point of the site is that the engine is served from this origin. If the
-        # copy step ever silently stops running, every diagram would break at runtime, so
-        # catch it here rather than in a visitor's browser.
-        run: |
-          set -euo pipefail
-          shopt -s nullglob
-          dirs=(build/assets/plantuml-client-*)
-          if [ ${#dirs[@]} -eq 0 ]; then
-            echo "No build/assets/plantuml-client-* directory was produced." >&2
-            exit 1
-          fi
-          for f in viz-global.js plantuml.js; do
-            if [ ! -s "${dirs[0]}/$f" ]; then
-              echo "Missing or empty: ${dirs[0]}/$f" >&2
-              exit 1
-            fi
-          done
-          echo "Runtime assets present in ${dirs[0]}:"
-          ls -lh "${dirs[0]}"
+        # Shared with ci.yml so the two cannot drift: the same assertion guards the pull request
+        # and the deploy.
+        run: npm run verify:assets
+
       - uses: actions/upload-pages-artifact@v5
         with:
           path: build

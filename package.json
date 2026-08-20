@@ -13,7 +13,8 @@
     "build": "docusaurus build",
     "serve": "docusaurus serve",
     "clear": "docusaurus clear",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "verify:assets": "node scripts/verify-runtime-assets.mjs"
   },
   "dependencies": {
     "@docusaurus/core": "^3.10.2",
