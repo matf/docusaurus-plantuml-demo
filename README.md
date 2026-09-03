@@ -12,10 +12,12 @@ deployment shape most likely to break a diagram integration, and the reason this
 
 ## What it shows
 
-| Section              | Contents                                                                       |
-| -------------------- | ------------------------------------------------------------------------------ |
-| Diagram gallery      | Sequence, class, activity, state, component, ER, mindmap, WBS, Gantt            |
-| Plugin behaviour     | Dark mode, many diagrams per page, fence titles and aliases, errors, plain code |
+| Section              | Contents                                                                                      |
+| -------------------- | --------------------------------------------------------------------------------------------- |
+| Diagram gallery      | Sequence, class, activity, state, component, ER, mindmap, WBS, Gantt                           |
+| Standard library     | C4, other notations, icons and sprites                                                         |
+| Deep links           | Linking from diagram nodes, and `#graph?highlight-node=…` targets                              |
+| Plugin behaviour     | Zoom and pan, dark mode, many diagrams per page, fence titles and aliases, errors, plain code, large diagrams |
 
 ## Running it locally
 
