@@ -43,6 +43,7 @@ const sidebars: SidebarsConfig = {
         'behaviour/ordinary-code',
         'behaviour/commonmark',
         'behaviour/mermaid',
+        'behaviour/large-diagrams',
       ],
     },
   ],
