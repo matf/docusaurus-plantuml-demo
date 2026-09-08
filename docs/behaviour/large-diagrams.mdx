@@ -6,20 +6,24 @@ title: Large diagrams
 # Diagrams taller than the engine's own limit
 
 The bundled PlantUML engine measures every diagram after layout and refuses to serialize one
-wider or taller than a fixed number of points, reporting
-`Diagram too large for browser rendering`. Upstream that limit is **4096 points** — about
-forty stacked class boxes, or seventy steps of an activity diagram. A real release runbook or
-domain model passes it without trying.
+wider or taller than a set number of points, reporting
+`Diagram too large for browser rendering`. The engine's own limit is **8192 points** — and
+was 4096 before `@plantuml/core` 1.2026.8 — which is about forty stacked class boxes, or
+seventy steps of an activity diagram. A real release runbook or domain model passes it
+without trying.
 
 It is not a limit you can talk your way around from the diagram source. `scale` has no effect,
 because the check reads the dimensions _before_ the scale factor is applied. `skinparam dpi`
 has no effect either. `left to right direction` only swaps which of the two numbers is too
 large.
 
-So the plugin raises it: the engine it serves is patched to accept **32768 points**. The
-pipeline below is 95 steps and lays out at 278 × 5667 points — well past the old ceiling — and
-renders normally. Use **Fit** in the toolbar to get the whole thing on screen, the minimap to
-move around it, and search to jump to a stage by name.
+So the plugin raises it, to **32768 points** by default, and the
+[`maxSvgSize`](https://github.com/matf/docusaurus-plantuml-plugin#diagram-size) option moves
+it — set it higher for a diagram that still does not fit, or to `0` to remove the check
+entirely. This site leaves the default in place. The pipeline below is 95 steps and lays out
+at 278 × 5667 points — well past the engine's own ceiling — and renders normally. Use **Fit**
+in the toolbar to get the whole thing on screen, the minimap to move around it, and search to
+jump to a stage by name.
 
 ```plantuml title="Release pipeline — from merge to production"
 @startuml
@@ -166,7 +170,7 @@ stop
 The ceiling applies to **both** dimensions, so a diagram can be perfectly short and still be
 refused for being too wide. The order lifecycle below is drawn with
 `left to right direction`, which is the natural shape for a long-running saga — and is exactly
-the case where the old 4096-point limit bit hardest, because a wide diagram is not
+the case where the engine's own limit bites hardest, because a wide diagram is not
 unreasonable, it is just wide.
 
 A wide diagram never breaks the page layout. The figure stays inside the content column, and
@@ -257,22 +261,24 @@ Settled --> ArchivedForAudit : compliance
 @enduml
 ```
 
-## What the old limit looked like
+## What hitting the limit looks like
 
-Before the ceiling was raised, this exact diagram produced an error panel rather than a
+Under the engine's own ceiling, this exact diagram produces an error panel rather than a
 picture. The engine reports its refusal through the same channel it uses for a syntax error,
 so it arrives as a rendering failure with the measured size attached:
 
 ```text
-Diagram too large for browser rendering: 278x5667 (max 4096)
+Diagram too large for browser rendering: 278x5667 (max 8192; override via the maxSvgSize
+option, or set it to 0 to disable this check)
 ```
 
 ## If you still hit the ceiling
 
-32768 points is a lot of diagram, but it is not infinite, and a diagram that large is a heavy
-page: the SVG runs to hundreds of kilobytes and is parsed twice on the main thread on its way
-in. If you reach the limit, or the page feels slow, the levers that actually work are the ones
-that make the picture smaller:
+You can raise `maxSvgSize`, but 32768 points is already a lot of diagram, and one that large
+is a heavy page: the SVG runs to hundreds of kilobytes and is parsed twice on the main thread
+on its way in. That cost is why the default is a number rather than `0`. If you reach the
+limit, or the page feels slow, the levers that actually work are the ones that make the
+picture smaller:
 
 - fewer nodes and edges — split one diagram into several fences;
 - `skinparam ranksep 20` and `skinparam nodesep 20` to tighten the spacing;
